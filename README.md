@@ -1,8 +1,10 @@
 ### Hi there 👋 This is Me Vibhu and i look like a panda
 My Labratory to learn and experement with stuff   
 
-<img align="center" alt="Coding" width="400" src="https://cdn.dribbble.com/users/5582962/screenshots/16564350/media/0f66abda6c6d2bf12edd6c3b09b9593c.jpg">
-<!--
+<img align="center" alt="Coding" width="400" src="https://cdn.dribbble.com/users/5582962/screenshots/16564350/media/0f66abda6c6d2bf12edd6c3b09b9593c.jpg"
+
+____________
+
 **Vibhu2/vibhu2** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
 Here are some ideas to get you started:
@@ -16,4 +18,5 @@ Here are some ideas to get you started:
 - 😄 Pronouns: ...
 - ⚡ Fun fact: ...
 -->
-[] Task1
+
+
