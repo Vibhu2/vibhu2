@@ -1,5 +1,6 @@
 ### Hi there 👋
-
+My Labratory to learn and experement with stuff im afraid of i.e. coding
+<img align="right" alt="Coding" width="400" src="https://cdn.dribbble.com/users/5582962/screenshots/16564350/media/0f66abda6c6d2bf12edd6c3b09b9593c.jpg">
 <!--
 **Vibhu2/vibhu2** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
