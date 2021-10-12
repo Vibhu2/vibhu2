@@ -1,7 +1,7 @@
 ### Hi there 👋 This is Me Vibhu 
 My Labratory to learn and experement with stuff   
 
-<img align="center" alt="Coding" width="400" src="https://cdn.dribbble.com/users/5582962/screenshots/16564350/media/0f66abda6c6d2bf12edd6c3b09b9593c.jpg"
+<img align="center" alt="Coding" width="400" src=""
 
 ____________
 
