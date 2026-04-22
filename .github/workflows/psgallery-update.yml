@@ -24,55 +24,68 @@ jobs:
           import urllib.request
           import json
           import re
-          import xml.etree.ElementTree as ET
+          import html.parser
 
-          # PSGallery owner name (profile username on powershellgallery.com)
           PSGALLERY_OWNER = "Vibhu_Bhatnagar"
           README_PATH = "README.md"
 
-          # Discover all modules published by PSGALLERY_OWNER using exact Owners filter
-          search_url = (
-              "https://www.powershellgallery.com/api/v2/Packages"
-              f"?\$filter=Owners+eq+'{PSGALLERY_OWNER}'+and+IsLatestVersion+eq+true"
-              "&\$orderby=Id"
-          )
-          req = urllib.request.Request(search_url, headers={"Accept": "application/atom+xml"})
+          # Step 1: Scrape the PSGallery profile page to get only YOUR modules
+          class ProfileParser(html.parser.HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.modules = []
+
+              def handle_starttag(self, tag, attrs):
+                  if tag == "a":
+                      attrs_dict = dict(attrs)
+                      href = attrs_dict.get("href", "")
+                      if href.startswith("/packages/") and href.count("/") == 2:
+                          mod_name = href.split("/packages/")[1].rstrip("/")
+                          if mod_name and mod_name not in self.modules:
+                              self.modules.append(mod_name)
+
+          profile_url = f"https://www.powershellgallery.com/profiles/{PSGALLERY_OWNER}"
+          req = urllib.request.Request(profile_url, headers={"User-Agent": "Mozilla/5.0"})
           with urllib.request.urlopen(req, timeout=30) as resp:
-              xml_data = resp.read().decode("utf-8")
+              html_data = resp.read().decode("utf-8")
 
-          ns = {
-              "atom": "http://www.w3.org/2005/Atom",
-              "d":    "http://schemas.microsoft.com/ado/2007/08/dataservices",
-              "m":    "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata",
-          }
-          root = ET.fromstring(xml_data)
-          discovered = {}
-          for entry in root.findall("atom:entry", ns):
-              props = entry.find("m:properties", ns)
-              if props is None:
-                  continue
-              mod_id    = props.findtext("d:Id",            default="", namespaces=ns).strip()
-              version   = props.findtext("d:Version",       default="", namespaces=ns).strip()
-              downloads = int(props.findtext("d:DownloadCount", default="0", namespaces=ns).strip() or 0)
-              summary_el = entry.find("atom:summary", ns)
-              summary   = (summary_el.text or "").strip() if summary_el is not None else ""
-              if mod_id:
-                  discovered[mod_id] = {"version": version, "downloads": downloads, "summary": summary}
+          parser = ProfileParser()
+          parser.feed(html_data)
+          module_names = parser.modules
 
-          if not discovered:
-              print(f"No modules found for owner '{PSGALLERY_OWNER}' -- check the profile name.")
+          if not module_names:
+              print(f"No modules found on profile for '{PSGALLERY_OWNER}'")
               exit(0)
 
-          print(f"Discovered {len(discovered)} module(s): {list(discovered.keys())}")
+          print(f"Found {len(module_names)} module(s): {module_names}")
 
+          # Step 2: Fetch latest version + downloads for each module
+          discovered = {}
+          for mod_id in module_names:
+              url = (
+                  "https://www.powershellgallery.com/api/v2/FindPackagesById()"
+                  f"?id='{mod_id}'&$filter=IsLatestVersion+eq+true"
+              )
+              try:
+                  req2 = urllib.request.Request(url, headers={"Accept": "application/json"})
+                  with urllib.request.urlopen(req2, timeout=15) as resp2:
+                      data = json.loads(resp2.read().decode())
+                  entry = data.get("d", {}).get("results", [{}])[0]
+                  version   = entry.get("Version", "")
+                  downloads = int(entry.get("DownloadCount", 0))
+                  discovered[mod_id] = {"version": version, "downloads": downloads}
+              except Exception as e:
+                  print(f"WARNING: Could not fetch {mod_id}: {e}")
+
+          # Step 3: Read README
           with open(README_PATH, "r", encoding="utf-8") as f:
               readme = f.read()
 
+          # Step 4: Update existing rows, queue new modules
           new_modules = []
           for mod_id, info in discovered.items():
               version   = info["version"]
               downloads = info["downloads"]
-              summary   = info["summary"]
               if not version:
                   print(f"WARNING: Empty version for {mod_id}, skipping.")
                   continue
@@ -100,18 +113,19 @@ jobs:
                       readme, flags=re.DOTALL
                   )
               else:
-                  new_modules.append((mod_id, ver_badge, dl_badge, summary,
+                  new_modules.append((mod_id, ver_badge, dl_badge,
                                       ver_marker_open, ver_marker_close,
                                       dl_marker_open,  dl_marker_close))
 
+          # Step 5: Insert new module rows into table
           TABLE_END_MARKER = "<!-- PSGALLERY-TABLE-END -->"
-          for (mod_id, ver_badge, dl_badge, summary, vmo, vmc, dmo, dmc) in new_modules:
+          for (mod_id, ver_badge, dl_badge, vmo, vmc, dmo, dmc) in new_modules:
               psgallery_link = f"https://www.powershellgallery.com/packages/{mod_id}"
               new_row = (
                   f"| [{mod_id}]({psgallery_link}) "
                   f"| {vmo}{ver_badge}{vmc} "
                   f"| {dmo}{dl_badge}{dmc} "
-                  f"| {summary or 'See PSGallery for details.'} |\n"
+                  f"| See PSGallery for details. |\n"
               )
               if TABLE_END_MARKER in readme:
                   readme = readme.replace(TABLE_END_MARKER, new_row + TABLE_END_MARKER)
@@ -119,6 +133,7 @@ jobs:
               else:
                   print(f"WARNING: TABLE_END_MARKER not found -- cannot auto-add row for {mod_id}.")
 
+          # Step 6: Write README
           with open(README_PATH, "w", encoding="utf-8") as f:
               f.write(readme)
 
