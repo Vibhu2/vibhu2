@@ -1,8 +1,20 @@
-# Hi, I'm Vibhu Bhatnagar 👋
+<h1 align="center">Hi, I'm Vibhu Bhatnagar 👋</h1>
+<h3 align="center">Senior Systems Administrator · PowerShell Author · Azure Engineer</h3>
 
-**Senior Systems Administrator** · PowerShell Author · Azure Engineer
+<p align="center">
+  <em>15+ years keeping Windows infrastructure running — AD, Azure, MSP tooling, and automation that actually gets used in production.</em>
+</p>
 
-15+ years keeping Windows infrastructure running — AD, Azure, MSP tooling, and automation that actually gets used in production.
+<p align="center">
+  <img src="https://readme-typing-svg.herokuapp.com/?lines=PowerShell+Author;Azure+%26+AD+Engineer;Automation+Enthusiast;Always+Learning&center=true&width=500&height=45&color=5391FE&vCenter=true&size=22" alt="Typing SVG" />
+</p>
+
+<p align="center">
+  <img src="https://komarev.com/ghpvc/?username=Vibhu2&label=Profile%20views&color=5391FE&style=flat" alt="Profile views" />
+  <a href="https://pwsh.in"><img src="https://img.shields.io/badge/blog-pwsh.in-5391FE?style=flat&logo=hugo&logoColor=white" alt="Blog" /></a>
+  <a href="https://www.powershellgallery.com/profiles/Vibhu_Bhatnagar"><img src="https://img.shields.io/badge/PSGallery-Vibhu__Bhatnagar-5391FE?style=flat&logo=powershell&logoColor=white" alt="PSGallery" /></a>
+  <a href="https://www.linkedin.com/in/vibhu-bhatnagar-02622798"><img src="https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=flat&logo=linkedin&logoColor=white" alt="LinkedIn" /></a>
+</p>
 
 ---
 
@@ -31,19 +43,38 @@
 
 ## 📊 GitHub Stats
 
-<p align="left">
-  <img src="https://github-readme-stats.vercel.app/api?username=Vibhu2&show_icons=true&theme=dark&hide_border=true&count_private=true&title_color=5391FE&icon_color=5391FE" height="160" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Vibhu2&layout=compact&theme=dark&hide_border=true&title_color=5391FE&langs_count=6" height="160" />
+<p align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=Vibhu2&show_icons=true&theme=tokyonight&hide_border=true&title_color=5391FE&icon_color=5391FE" height="160" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Vibhu2&layout=compact&theme=tokyonight&hide_border=true&title_color=5391FE&langs_count=6" height="160" />
+</p>
+
+<p align="center">
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=Vibhu2&theme=tokyonight&hide_border=true&ring=5391FE&fire=5391FE&currStreakLabel=5391FE" height="160" />
+</p>
+
+<p align="center">
+  <img src="https://github-profile-trophy.vercel.app/?username=Vibhu2&theme=tokyonight&no-frame=true&row=1&column=6" />
 </p>
 
 ---
 
-## 🔗 Links
+## ✍️ Latest from the blog — [pwsh.in](https://pwsh.in)
 
-[![Blog](https://img.shields.io/badge/Blog-pwsh.in-5391FE?style=flat&logo=hugo&logoColor=white)](https://pwsh.in)
-[![PSGallery](https://img.shields.io/badge/PSGallery-Vibhu__Bhatnagar-5391FE?style=flat&logo=powershell&logoColor=white)](https://www.powershellgallery.com/profiles/Vibhu_Bhatnagar)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/vibhu-bhatnagar-02622798)
+<!-- BLOG-POST-LIST:START -->
+<!-- BLOG-POST-LIST:END -->
+
+> Auto-populated by the blog-post-workflow GitHub Action every 12 hours.
 
 ---
 
-> *AZ-104 Certified · Datto Certified Technical Specialist · IT By Design*
+## 🏅 Certifications
+
+- **AZ-104** — Microsoft Certified: Azure Administrator Associate
+- **Datto Certified Technical Specialist**
+- **IT By Design** — Senior Systems Administrator
+
+---
+
+<p align="center">
+  <sub>⭐ If you find any of my PowerShell modules useful, consider starring the repo — it helps others discover it!</sub>
+</p>
