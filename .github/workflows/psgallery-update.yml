@@ -1,0 +1,69 @@
+name: Update PSGallery module stats
+
+on:
+  schedule:
+    # Runs daily at midnight IST (18:30 UTC) — same time as blog update
+    - cron: '30 18 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-psgallery-stats:
+    name: Fetch PSGallery version + downloads and update README
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch PSGallery stats and update README
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          MODULES=("VB.WorkstationReport" "VB.NextCloud" "VB.ServerInventory")
+          README="README.md"
+
+          for MODULE in "${MODULES[@]}"; do
+            echo "Fetching stats for $MODULE ..."
+
+            # Call NuGet/PSGallery V2 API
+            API_URL="https://www.powershellgallery.com/api/v2/Packages?\$filter=Id+eq+'$MODULE'+and+IsLatestVersion+eq+true&\$select=Id,Version,DownloadCount"
+            RESPONSE=$(curl -s "$API_URL")
+
+            VERSION=$(echo "$RESPONSE" | grep -oP '(?<=<d:Version>)[^<]+' | head -1)
+            DOWNLOADS=$(echo "$RESPONSE" | grep -oP '(?<=<d:DownloadCount m:type="Edm.Int64">)[^<]+' | head -1)
+
+            if [ -z "$VERSION" ]; then
+              echo "WARNING: Could not fetch version for $MODULE, skipping."
+              continue
+            fi
+
+            echo "  Version:   $VERSION"
+            echo "  Downloads: $DOWNLOADS"
+
+            # Format download count with commas for readability
+            DL_FORMATTED=$(printf "%'d" "$DOWNLOADS" 2>/dev/null || echo "$DOWNLOADS")
+
+            # Build the new badge markdown strings
+            NEW_VER_BADGE="![v${VERSION}](https://img.shields.io/badge/version-${VERSION}-5391FE?style=flat)"
+            NEW_DL_BADGE="![downloads](https://img.shields.io/badge/downloads-${DL_FORMATTED}-5391FE?style=flat)"
+
+            # Replace between the version markers
+            perl -i -0pe "s|(?<=<!-- PSGALLERY-VERSION:$MODULE -->).*?(?=<!-- /PSGALLERY-VERSION:$MODULE -->)|$NEW_VER_BADGE|s" "$README"
+
+            # Replace between the download markers
+            perl -i -0pe "s|(?<=<!-- PSGALLERY-DL:$MODULE -->).*?(?=<!-- /PSGALLERY-DL:$MODULE -->)|$NEW_DL_BADGE|s" "$README"
+
+            echo "  README updated for $MODULE"
+          done
+
+      - name: Commit updated README if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git diff --cached --quiet || git commit -m "chore: update PSGallery module stats [skip ci]"
+          git push
