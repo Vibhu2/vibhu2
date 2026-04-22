@@ -33,7 +33,7 @@ jobs:
           search_url = (
               "https://www.powershellgallery.com/api/v2/Packages"
               "?$filter=startswith(Id,'VB')"
-              "+and+substringof('Vibhu',Authors)"
+              "+and+Authors+eq+'Vibhu_Bhatnagar'"
               "+and+IsLatestVersion+eq+true"
               "&$orderby=Id"
           )
