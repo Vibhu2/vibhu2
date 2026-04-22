@@ -24,64 +24,51 @@ jobs:
           import urllib.request
           import json
           import re
-          import html.parser
+          import xml.etree.ElementTree as ET
 
-          PSGALLERY_OWNER = "Vibhu_Bhatnagar"
           README_PATH = "README.md"
 
-          # Step 1: Scrape the PSGallery profile page to get only YOUR modules
-          class ProfileParser(html.parser.HTMLParser):
-              def __init__(self):
-                  super().__init__()
-                  self.modules = []
-
-              def handle_starttag(self, tag, attrs):
-                  if tag == "a":
-                      attrs_dict = dict(attrs)
-                      href = attrs_dict.get("href", "")
-                      if href.startswith("/packages/") and href.count("/") == 2:
-                          mod_name = href.split("/packages/")[1].rstrip("/")
-                          if mod_name and mod_name not in self.modules:
-                              self.modules.append(mod_name)
-
-          profile_url = f"https://www.powershellgallery.com/profiles/{PSGALLERY_OWNER}"
-          req = urllib.request.Request(profile_url, headers={"User-Agent": "Mozilla/5.0"})
+          # Equivalent to: Find-Module -Name "VB*" | Where-Object { $_.CompanyName -like "*Vibhu*" }
+          # PSGallery OData: latest versions where Id starts with VB and Authors contains Vibhu
+          search_url = (
+              "https://www.powershellgallery.com/api/v2/Packages"
+              "?$filter=startswith(Id,'VB')"
+              "+and+substringof('Vibhu',Authors)"
+              "+and+IsLatestVersion+eq+true"
+              "&$orderby=Id"
+          )
+          req = urllib.request.Request(search_url, headers={"Accept": "application/atom+xml"})
           with urllib.request.urlopen(req, timeout=30) as resp:
-              html_data = resp.read().decode("utf-8")
+              xml_data = resp.read().decode("utf-8")
 
-          parser = ProfileParser()
-          parser.feed(html_data)
-          module_names = parser.modules
+          ns = {
+              "atom": "http://www.w3.org/2005/Atom",
+              "d":    "http://schemas.microsoft.com/ado/2007/08/dataservices",
+              "m":    "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata",
+          }
+          root = ET.fromstring(xml_data)
+          discovered = {}
+          for entry in root.findall("atom:entry", ns):
+              props = entry.find("m:properties", ns)
+              if props is None:
+                  continue
+              mod_id    = props.findtext("d:Id",            default="", namespaces=ns).strip()
+              version   = props.findtext("d:Version",       default="", namespaces=ns).strip()
+              downloads = int(props.findtext("d:DownloadCount", default="0", namespaces=ns).strip() or 0)
+              if mod_id:
+                  discovered[mod_id] = {"version": version, "downloads": downloads}
 
-          if not module_names:
-              print(f"No modules found on profile for '{PSGALLERY_OWNER}'")
+          if not discovered:
+              print("No modules found matching VB* by Vibhu.")
               exit(0)
 
-          print(f"Found {len(module_names)} module(s): {module_names}")
+          print(f"Discovered {len(discovered)} module(s): {list(discovered.keys())}")
 
-          # Step 2: Fetch latest version + downloads for each module
-          discovered = {}
-          for mod_id in module_names:
-              url = (
-                  "https://www.powershellgallery.com/api/v2/FindPackagesById()"
-                  f"?id='{mod_id}'&$filter=IsLatestVersion+eq+true"
-              )
-              try:
-                  req2 = urllib.request.Request(url, headers={"Accept": "application/json"})
-                  with urllib.request.urlopen(req2, timeout=15) as resp2:
-                      data = json.loads(resp2.read().decode())
-                  entry = data.get("d", {}).get("results", [{}])[0]
-                  version   = entry.get("Version", "")
-                  downloads = int(entry.get("DownloadCount", 0))
-                  discovered[mod_id] = {"version": version, "downloads": downloads}
-              except Exception as e:
-                  print(f"WARNING: Could not fetch {mod_id}: {e}")
-
-          # Step 3: Read README
+          # Read README
           with open(README_PATH, "r", encoding="utf-8") as f:
               readme = f.read()
 
-          # Step 4: Update existing rows, queue new modules
+          # Update existing rows, queue new modules
           new_modules = []
           for mod_id, info in discovered.items():
               version   = info["version"]
@@ -102,6 +89,7 @@ jobs:
               dl_marker_close  = f"<!-- /PSGALLERY-DL:{mod_id} -->"
 
               if ver_marker_open in readme:
+                  # Module already in table — update badges in place
                   readme = re.sub(
                       rf"({re.escape(ver_marker_open)}).*?({re.escape(ver_marker_close)})",
                       rf"\1{ver_badge}\2",
@@ -113,11 +101,12 @@ jobs:
                       readme, flags=re.DOTALL
                   )
               else:
+                  # New module — add a row to the table
                   new_modules.append((mod_id, ver_badge, dl_badge,
                                       ver_marker_open, ver_marker_close,
                                       dl_marker_open,  dl_marker_close))
 
-          # Step 5: Insert new module rows into table
+          # Insert new rows before the end marker
           TABLE_END_MARKER = "<!-- PSGALLERY-TABLE-END -->"
           for (mod_id, ver_badge, dl_badge, vmo, vmc, dmo, dmc) in new_modules:
               psgallery_link = f"https://www.powershellgallery.com/packages/{mod_id}"
@@ -133,7 +122,7 @@ jobs:
               else:
                   print(f"WARNING: TABLE_END_MARKER not found -- cannot auto-add row for {mod_id}.")
 
-          # Step 6: Write README
+          # Write README
           with open(README_PATH, "w", encoding="utf-8") as f:
               f.write(readme)
 
