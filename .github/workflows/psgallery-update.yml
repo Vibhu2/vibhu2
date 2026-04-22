@@ -30,13 +30,11 @@ jobs:
           PSGALLERY_OWNER = "Vibhu_Bhatnagar"
           README_PATH = "README.md"
 
-          # ── Step 1: Discover all modules published by PSGALLERY_OWNER ─────────
-          # Use the OData Packages endpoint with Owners filter + IsLatestVersion
-          # This returns ONLY packages owned by the specified user
+          # Discover all modules published by PSGALLERY_OWNER using exact Owners filter
           search_url = (
               "https://www.powershellgallery.com/api/v2/Packages"
-              f"?$filter=Owners+eq+'{PSGALLERY_OWNER}'+and+IsLatestVersion+eq+true"
-              "&$orderby=Id"
+              f"?\$filter=Owners+eq+'{PSGALLERY_OWNER}'+and+IsLatestVersion+eq+true"
+              "&\$orderby=Id"
           )
           req = urllib.request.Request(search_url, headers={"Accept": "application/atom+xml"})
           with urllib.request.urlopen(req, timeout=30) as resp:
@@ -62,16 +60,14 @@ jobs:
                   discovered[mod_id] = {"version": version, "downloads": downloads, "summary": summary}
 
           if not discovered:
-              print(f"No modules found for owner '{PSGALLERY_OWNER}' — check the profile name.")
+              print(f"No modules found for owner '{PSGALLERY_OWNER}' -- check the profile name.")
               exit(0)
 
           print(f"Discovered {len(discovered)} module(s): {list(discovered.keys())}")
 
-          # ── Step 2: Read README ───────────────────────────────────────────────
           with open(README_PATH, "r", encoding="utf-8") as f:
               readme = f.read()
 
-          # ── Step 3: Update existing rows and collect new modules ──────────────
           new_modules = []
           for mod_id, info in discovered.items():
               version   = info["version"]
@@ -93,7 +89,6 @@ jobs:
               dl_marker_close  = f"<!-- /PSGALLERY-DL:{mod_id} -->"
 
               if ver_marker_open in readme:
-                  # Module already has a row — update in place
                   readme = re.sub(
                       rf"({re.escape(ver_marker_open)}).*?({re.escape(ver_marker_close)})",
                       rf"\1{ver_badge}\2",
@@ -105,12 +100,10 @@ jobs:
                       readme, flags=re.DOTALL
                   )
               else:
-                  # New module — queue for table insertion
                   new_modules.append((mod_id, ver_badge, dl_badge, summary,
                                       ver_marker_open, ver_marker_close,
                                       dl_marker_open,  dl_marker_close))
 
-          # ── Step 4: Insert new module rows into the table ─────────────────────
           TABLE_END_MARKER = "<!-- PSGALLERY-TABLE-END -->"
           for (mod_id, ver_badge, dl_badge, summary, vmo, vmc, dmo, dmc) in new_modules:
               psgallery_link = f"https://www.powershellgallery.com/packages/{mod_id}"
@@ -124,157 +117,8 @@ jobs:
                   readme = readme.replace(TABLE_END_MARKER, new_row + TABLE_END_MARKER)
                   print(f"Added new row for {mod_id}")
               else:
-                  print(f"WARNING: TABLE_END_MARKER not found — cannot auto-add row for {mod_id}.")
+                  print(f"WARNING: TABLE_END_MARKER not found -- cannot auto-add row for {mod_id}.")
 
-          # ── Step 5: Write README ──────────────────────────────────────────────
-          with open(README_PATH, "w", encoding="utf-8") as f:
-              f.write(readme)
-
-          print("README updated successfully.")
-          PYEOF
-
-      - name: Commit updated README if changed
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md
-          git diff --cached --quiet && echo "No changes to commit." || (git commit -m "chore: update PSGallery module stats [skip ci]" && git push)
-name: Update PSGallery module stats
-
-on:
-  schedule:
-    # Runs daily at midnight IST (18:30 UTC)
-    - cron: '30 18 * * *'
-  workflow_dispatch:
-
-permissions:
-  contents: write
-
-jobs:
-  update-psgallery-stats:
-    name: Fetch PSGallery version + downloads and update README
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Fetch PSGallery stats and update README
-        run: |
-          python3 << 'PYEOF'
-          import urllib.request
-          import json
-          import re
-          import xml.etree.ElementTree as ET
-
-          OWNER = "Vibhu2"
-          README_PATH = "README.md"
-
-          # ── Step 1: Discover all modules published by OWNER ──────────────────
-          search_url = f"https://www.powershellgallery.com/api/v2/Search()?q=owner%3A{OWNER}&includePrerelease=false"
-          req = urllib.request.Request(search_url, headers={"Accept": "application/atom+xml"})
-          with urllib.request.urlopen(req, timeout=30) as resp:
-              xml_data = resp.read().decode("utf-8")
-
-          ns = {
-              "atom": "http://www.w3.org/2005/Atom",
-              "d":    "http://schemas.microsoft.com/ado/2007/08/dataservices",
-              "m":    "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata",
-          }
-          root = ET.fromstring(xml_data)
-          discovered = {}
-          for entry in root.findall("atom:entry", ns):
-              props = entry.find("m:properties", ns)
-              if props is None:
-                  continue
-              mod_id = props.findtext("d:Id", default="", namespaces=ns).strip()
-              version = props.findtext("d:Version", default="", namespaces=ns).strip()
-              downloads = int(props.findtext("d:DownloadCount", default="0", namespaces=ns).strip() or 0)
-              summary_el = entry.find("atom:summary", ns)
-              summary = (summary_el.text or "").strip() if summary_el is not None else ""
-              if mod_id:
-                  discovered[mod_id] = {"version": version, "downloads": downloads, "summary": summary}
-
-          if not discovered:
-              print("No modules found for owner — check owner name or API response.")
-              exit(0)
-
-          print(f"Discovered {len(discovered)} module(s): {list(discovered.keys())}")
-
-          # ── Step 2: For each module, get the definitive latest version ────────
-          for mod_id in list(discovered.keys()):
-              url = f"https://www.powershellgallery.com/api/v2/FindPackagesById()?id='{mod_id}'&$filter=IsLatestVersion+eq+true"
-              try:
-                  req2 = urllib.request.Request(url, headers={"Accept": "application/json"})
-                  with urllib.request.urlopen(req2, timeout=15) as resp2:
-                      data = json.loads(resp2.read().decode())
-                  entry2 = data.get("d", {}).get("results", [{}])[0]
-                  v = entry2.get("Version", "")
-                  dl = int(entry2.get("DownloadCount", 0))
-                  if v:
-                      discovered[mod_id]["version"] = v
-                      discovered[mod_id]["downloads"] = dl
-              except Exception as e:
-                  print(f"WARNING: Could not get latest for {mod_id}: {e}")
-
-          # ── Step 3: Read README ───────────────────────────────────────────────
-          with open(README_PATH, "r", encoding="utf-8") as f:
-              readme = f.read()
-
-          # ── Step 4: Update existing rows and collect new modules ──────────────
-          new_modules = []
-          for mod_id, info in discovered.items():
-              version   = info["version"]
-              downloads = info["downloads"]
-              summary   = info["summary"]
-              if not version:
-                  print(f"WARNING: Empty version for {mod_id}, skipping.")
-                  continue
-
-              dl_formatted = f"{int(downloads):,}"
-              print(f"{mod_id}: v{version}, {dl_formatted} downloads")
-
-              ver_badge = f"![v{version}](https://img.shields.io/badge/version-{version}-5391FE?style=flat)"
-              dl_badge  = f"![{dl_formatted} downloads](https://img.shields.io/badge/downloads-{dl_formatted.replace(',', '--')}-5391FE?style=flat)"
-
-              ver_marker_open  = f"<!-- PSGALLERY-VERSION:{mod_id} -->"
-              ver_marker_close = f"<!-- /PSGALLERY-VERSION:{mod_id} -->"
-              dl_marker_open   = f"<!-- PSGALLERY-DL:{mod_id} -->"
-              dl_marker_close  = f"<!-- /PSGALLERY-DL:{mod_id} -->"
-
-              if ver_marker_open in readme:
-                  # Module already has a row — update in place
-                  readme = re.sub(
-                      rf"({re.escape(ver_marker_open)}).*?({re.escape(ver_marker_close)})",
-                      rf"\1{ver_badge}\2",
-                      readme, flags=re.DOTALL
-                  )
-                  readme = re.sub(
-                      rf"({re.escape(dl_marker_open)}).*?({re.escape(dl_marker_close)})",
-                      rf"\1{dl_badge}\2",
-                      readme, flags=re.DOTALL
-                  )
-              else:
-                  # New module — queue for table insertion
-                  new_modules.append((mod_id, ver_badge, dl_badge, summary, ver_marker_open, ver_marker_close, dl_marker_open, dl_marker_close))
-
-          # ── Step 5: Insert new module rows into the table ─────────────────────
-          TABLE_END_MARKER = "<!-- PSGALLERY-TABLE-END -->"
-          for (mod_id, ver_badge, dl_badge, summary, vmo, vmc, dmo, dmc) in new_modules:
-              psgallery_link = f"https://www.powershellgallery.com/packages/{mod_id}"
-              new_row = (
-                  f"| [{mod_id}]({psgallery_link}) "
-                  f"| {vmo}{ver_badge}{vmc} "
-                  f"| {dmo}{dl_badge}{dmc} "
-                  f"| {summary or 'See PSGallery for details.'} |\n"
-              )
-              if TABLE_END_MARKER in readme:
-                  readme = readme.replace(TABLE_END_MARKER, new_row + TABLE_END_MARKER)
-                  print(f"Added new row for {mod_id}")
-              else:
-                  print(f"WARNING: TABLE_END_MARKER not found — cannot auto-add row for {mod_id}. Please add it manually.")
-
-          # ── Step 6: Write README ──────────────────────────────────────────────
           with open(README_PATH, "w", encoding="utf-8") as f:
               f.write(readme)
 
