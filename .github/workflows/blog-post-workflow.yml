@@ -2,8 +2,8 @@ name: Latest blog posts
 
 on:
   schedule:
-    # Runs every 12 hours
-    - cron: '0 */12 * * *'
+    # Runs daily at midnight IST (18:30 UTC)
+    - cron: '30 18 * * *'
   workflow_dispatch:
 
 permissions:
