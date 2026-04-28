@@ -65,11 +65,11 @@
 ## ✍️ Latest from the blog — [pwsh.in](https://pwsh.in)
 
 <!-- BLOG-POST-LIST:START -->
+- [Delete Stubborn Files and Folders on Windows](https://pwsh.in/posts/delete-stubborn-files-folders/)
+- [Cut MCP Token Costs 88% with jmunch-mcp](https://pwsh.in/posts/cut-mcp-token-costs-jmunch/)
 - [Running PowerShell as the Logged-On User from SYSTEM Context](https://pwsh.in/posts/invoke-vbascurrentuser/)
 - [Managing Printer Mappings Across User Profiles with PowerShell](https://pwsh.in/posts/printer-mapping-powershell-vb-workstationreport/)
 - [Automating PowerShell Remoting Setup with Enable-VBPsremoting](https://pwsh.in/posts/enable-vbpsremoting/)
-- [Automating Azure AD Sync Monitoring Across 155 MSP Clients with PowerShell](https://pwsh.in/posts/automating-ad-sync-monitoring-with-powershell/)
-- [Basics](https://pwsh.in/notes/powershell/basics/)
 <!-- BLOG-POST-LIST:END -->
 
 > Auto-populated daily by GitHub Actions.
