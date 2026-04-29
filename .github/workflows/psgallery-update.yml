@@ -22,18 +22,16 @@ jobs:
         run: |
           python3 << 'PYEOF'
           import urllib.request
-          import json
           import re
           import xml.etree.ElementTree as ET
 
           README_PATH = "README.md"
 
-          # Equivalent to: Find-Module -Name "VB*" | Where-Object { $_.CompanyName -like "*Vibhu*" }
-          # PSGallery OData: latest versions where Id starts with VB and Authors contains Vibhu
+          # Step 1: Discover modules via OData (version info only)
+          # Authors is a free-text field — filter by Id prefix and owner profile instead
           search_url = (
               "https://www.powershellgallery.com/api/v2/Packages"
               "?$filter=startswith(Id,'VB')"
-              "+and+Authors+eq+'Vibhu_Bhatnagar'"
               "+and+IsLatestVersion+eq+true"
               "&$orderby=Id"
           )
@@ -52,21 +50,69 @@ jobs:
               props = entry.find("m:properties", ns)
               if props is None:
                   continue
-              mod_id    = props.findtext("d:Id",            default="", namespaces=ns).strip()
-              version   = props.findtext("d:Version",       default="", namespaces=ns).strip()
-              downloads = int(props.findtext("d:DownloadCount", default="0", namespaces=ns).strip() or 0)
-              if mod_id:
-                  discovered[mod_id] = {"version": version, "downloads": downloads}
+              mod_id  = props.findtext("d:Id",      default="", namespaces=ns).strip()
+              version = props.findtext("d:Version", default="", namespaces=ns).strip()
+              owners  = props.findtext("d:Owners",  default="", namespaces=ns).strip()
+              # Only include modules owned by Vibhu_Bhatnagar
+              if mod_id and "Vibhu_Bhatnagar" in owners:
+                  discovered[mod_id] = {"version": version, "downloads": 0}
 
           if not discovered:
-              print("No modules found matching VB* by Vibhu.")
+              print("No modules found matching VB* owned by Vibhu_Bhatnagar.")
               exit(0)
 
           print(f"Discovered {len(discovered)} module(s): {list(discovered.keys())}")
 
+          # Step 2: Scrape the PSGallery HTML page for each module's displayed download count
+          # (matches what the website shows — more accurate than OData DownloadCount)
+          for mod_id in discovered:
+              page_url = f"https://www.powershellgallery.com/packages/{mod_id}"
+              try:
+                  page_req = urllib.request.Request(
+                      page_url,
+                      headers={"User-Agent": "Mozilla/5.0 (compatible; GH-Actions)"}
+                  )
+                  with urllib.request.urlopen(page_req, timeout=30) as page_resp:
+                      html = page_resp.read().decode("utf-8")
+                  match = re.search(r'([0-9,]+)\s+Downloads', html)
+                  if match:
+                      downloads = int(match.group(1).replace(",", ""))
+                      discovered[mod_id]["downloads"] = downloads
+                      print(f"  {mod_id}: scraped {downloads:,} downloads from HTML")
+                  else:
+                      print(f"  WARNING: Could not find download count in HTML for {mod_id}")
+              except Exception as e:
+                  print(f"  WARNING: Failed to scrape {mod_id}: {e}")
+
+          # Compute totals across all discovered modules
+          total_packages  = len(discovered)
+          total_downloads = sum(info["downloads"] for info in discovered.values())
+          print(f"Totals: {total_packages} packages, {total_downloads:,} downloads")
+
           # Read README
           with open(README_PATH, "r", encoding="utf-8") as f:
               readme = f.read()
+
+          # Update total-packages and total-downloads badges
+          pkg_badge = (
+              f"![{total_packages} packages]"
+              f"(https://img.shields.io/badge/packages-{total_packages}-5391FE?style=flat&logo=powershell&logoColor=white)"
+          )
+          dl_total_fmt = f"{total_downloads:,}".replace(",", "--")
+          dl_total_badge = (
+              f"![{total_downloads:,} total downloads]"
+              f"(https://img.shields.io/badge/total%20downloads-{dl_total_fmt}-5391FE?style=flat&logo=powershell&logoColor=white)"
+          )
+          readme = re.sub(
+              r"(<!-- PSGALLERY-TOTAL-PACKAGES -->).*?(<!-- /PSGALLERY-TOTAL-PACKAGES -->)",
+              rf"\g<1>{pkg_badge}\g<2>",
+              readme, flags=re.DOTALL
+          )
+          readme = re.sub(
+              r"(<!-- PSGALLERY-TOTAL-DOWNLOADS -->).*?(<!-- /PSGALLERY-TOTAL-DOWNLOADS -->)",
+              rf"\g<1>{dl_total_badge}\g<2>",
+              readme, flags=re.DOTALL
+          )
 
           # Update existing rows, queue new modules
           new_modules = []
