@@ -93,15 +93,15 @@ jobs:
           with open(README_PATH, "r", encoding="utf-8") as f:
               readme = f.read()
 
-          # Update total-packages and total-downloads badges
+          # Update total-packages and total-downloads badges (HTML img tags render reliably in GitHub READMEs)
           pkg_badge = (
-              f"![{total_packages} packages]"
-              f"(https://img.shields.io/badge/packages-{total_packages}-5391FE?style=flat&logo=powershell&logoColor=white)"
+              f'<img src="https://img.shields.io/badge/packages-{total_packages}-5391FE?style=flat&logo=powershell&logoColor=white"'
+              f' alt="{total_packages} packages" />'
           )
           dl_total_fmt = f"{total_downloads:,}".replace(",", "--")
           dl_total_badge = (
-              f"![{total_downloads:,} total downloads]"
-              f"(https://img.shields.io/badge/total%20downloads-{dl_total_fmt}-5391FE?style=flat&logo=powershell&logoColor=white)"
+              f'<img src="https://img.shields.io/badge/total%20downloads-{dl_total_fmt}-5391FE?style=flat&logo=powershell&logoColor=white"'
+              f' alt="{total_downloads:,} total downloads" />'
           )
           readme = re.sub(
               r"(<!-- PSGALLERY-TOTAL-PACKAGES -->).*?(<!-- /PSGALLERY-TOTAL-PACKAGES -->)",

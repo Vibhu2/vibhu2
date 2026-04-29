@@ -34,7 +34,7 @@
 
 ## 📦 Published PowerShell Modules
 
-<!-- PSGALLERY-TOTAL-PACKAGES -->![3 packages](https://img.shields.io/badge/packages-3-5391FE?style=flat&logo=powershell&logoColor=white)<!-- /PSGALLERY-TOTAL-PACKAGES --> <!-- PSGALLERY-TOTAL-DOWNLOADS -->![228 total downloads](https://img.shields.io/badge/total%20downloads-228-5391FE?style=flat&logo=powershell&logoColor=white)<!-- /PSGALLERY-TOTAL-DOWNLOADS -->
+<p><!-- PSGALLERY-TOTAL-PACKAGES --><img src="https://img.shields.io/badge/packages-3-5391FE?style=flat&logo=powershell&logoColor=white" alt="3 packages" /><!-- /PSGALLERY-TOTAL-PACKAGES --> <!-- PSGALLERY-TOTAL-DOWNLOADS --><img src="https://img.shields.io/badge/total%20downloads-228-5391FE?style=flat&logo=powershell&logoColor=white" alt="228 total downloads" /><!-- /PSGALLERY-TOTAL-DOWNLOADS --></p>
 
 > Auto-updated daily by GitHub Actions — version and download count pulled live from PowerShell Gallery.
 
