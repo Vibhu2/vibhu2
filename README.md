@@ -37,7 +37,7 @@
 
 ## 📦 Published PowerShell Modules
 
-<p><!-- PSGALLERY-TOTAL-PACKAGES --><img src="https://img.shields.io/badge/packages-3-5391FE?style=flat&logo=powershell&logoColor=white" alt="3 packages" /><!-- /PSGALLERY-TOTAL-PACKAGES --> <!-- PSGALLERY-TOTAL-DOWNLOADS --><img src="https://img.shields.io/badge/total%20downloads-0-5391FE?style=flat&logo=powershell&logoColor=white" alt="0 total downloads" /><!-- /PSGALLERY-TOTAL-DOWNLOADS --></p>
+<p><!-- PSGALLERY-TOTAL-PACKAGES --><img src="https://img.shields.io/badge/packages-4-5391FE?style=flat&logo=powershell&logoColor=white" alt="4 packages" /><!-- /PSGALLERY-TOTAL-PACKAGES --> <!-- PSGALLERY-TOTAL-DOWNLOADS --><img src="https://img.shields.io/badge/total%20downloads-0-5391FE?style=flat&logo=powershell&logoColor=white" alt="0 total downloads" /><!-- /PSGALLERY-TOTAL-DOWNLOADS --></p>
 
 > Auto-updated daily by GitHub Actions — version and download count pulled live from PowerShell Gallery.
 
@@ -46,6 +46,7 @@
 | [**VB.WorkstationReport**](https://www.powershellgallery.com/packages/VB.WorkstationReport) | <!-- PSGALLERY-VERSION:VB.WorkstationReport -->![v1.9.0](https://img.shields.io/badge/version-1.9.0-5391FE?style=flat)<!-- /PSGALLERY-VERSION:VB.WorkstationReport --> | <!-- PSGALLERY-DL:VB.WorkstationReport -->![0 downloads](https://img.shields.io/badge/downloads-0-5391FE?style=flat)<!-- /PSGALLERY-DL:VB.WorkstationReport --> | End-to-end workstation auditing — profiles, printers, OneDrive, Sync Center, folder redirections, and Nextcloud upload |
 | [**VB.NextCloud**](https://www.powershellgallery.com/packages/VB.NextCloud) | <!-- PSGALLERY-VERSION:VB.NextCloud -->![v1.4.0](https://img.shields.io/badge/version-1.4.0-5391FE?style=flat)<!-- /PSGALLERY-VERSION:VB.NextCloud --> | <!-- PSGALLERY-DL:VB.NextCloud -->![0 downloads](https://img.shields.io/badge/downloads-0-5391FE?style=flat)<!-- /PSGALLERY-DL:VB.NextCloud --> | WebDAV utilities for Nextcloud — single-file PUT, batch upload with auto folder creation, PROPFIND directory listing |
 | [**VB.ServerInventory**](https://www.powershellgallery.com/packages/VB.ServerInventory) | <!-- PSGALLERY-VERSION:VB.ServerInventory -->![v1.0.2](https://img.shields.io/badge/version-1.0.2-5391FE?style=flat)<!-- /PSGALLERY-VERSION:VB.ServerInventory --> | <!-- PSGALLERY-DL:VB.ServerInventory -->![0 downloads](https://img.shields.io/badge/downloads-0-5391FE?style=flat)<!-- /PSGALLERY-DL:VB.ServerInventory --> | 34 cmdlets across 10 categories for Windows Server auditing — AD, GPO, security, DHCP/DNS, RDS, shares, and more |
+| [VB.AdminTools](https://www.powershellgallery.com/packages/VB.AdminTools) | <!-- PSGALLERY-VERSION:VB.AdminTools -->![v1.0.1](https://img.shields.io/badge/version-1.0.1-5391FE?style=flat)<!-- /PSGALLERY-VERSION:VB.AdminTools --> | <!-- PSGALLERY-DL:VB.AdminTools -->![0 downloads](https://img.shields.io/badge/downloads-0-5391FE?style=flat)<!-- /PSGALLERY-DL:VB.AdminTools --> | See PSGallery for details. |
 <!-- PSGALLERY-TABLE-END -->
 
 ---
