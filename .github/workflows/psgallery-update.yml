@@ -50,39 +50,24 @@ jobs:
               props = entry.find("m:properties", ns)
               if props is None:
                   continue
-              mod_id  = props.findtext("d:Id",      default="", namespaces=ns).strip()
-              version = props.findtext("d:Version", default="", namespaces=ns).strip()
-              owners  = props.findtext("d:Owners",  default="", namespaces=ns).strip()
+              mod_id    = props.findtext("d:Id",            default="", namespaces=ns).strip()
+              version   = props.findtext("d:Version",       default="", namespaces=ns).strip()
+              owners    = props.findtext("d:Owners",        default="", namespaces=ns).strip()
+              dl_count  = props.findtext("d:DownloadCount", default="0", namespaces=ns).strip()
               # Only include modules owned by Vibhu_Bhatnagar
               if mod_id and "Vibhu_Bhatnagar" in owners:
-                  discovered[mod_id] = {"version": version, "downloads": 0}
+                  try:
+                      downloads = int(dl_count)
+                  except (ValueError, TypeError):
+                      downloads = 0
+                  discovered[mod_id] = {"version": version, "downloads": downloads}
+                  print(f"  {mod_id}: v{version}, {downloads:,} downloads (from OData)")
 
           if not discovered:
               print("No modules found matching VB* owned by Vibhu_Bhatnagar.")
               exit(0)
 
           print(f"Discovered {len(discovered)} module(s): {list(discovered.keys())}")
-
-          # Step 2: Scrape the PSGallery HTML page for each module's displayed download count
-          # (matches what the website shows — more accurate than OData DownloadCount)
-          for mod_id in discovered:
-              page_url = f"https://www.powershellgallery.com/packages/{mod_id}"
-              try:
-                  page_req = urllib.request.Request(
-                      page_url,
-                      headers={"User-Agent": "Mozilla/5.0 (compatible; GH-Actions)"}
-                  )
-                  with urllib.request.urlopen(page_req, timeout=30) as page_resp:
-                      html = page_resp.read().decode("utf-8")
-                  match = re.search(r'([0-9,]+)\s+Downloads', html)
-                  if match:
-                      downloads = int(match.group(1).replace(",", ""))
-                      discovered[mod_id]["downloads"] = downloads
-                      print(f"  {mod_id}: scraped {downloads:,} downloads from HTML")
-                  else:
-                      print(f"  WARNING: Could not find download count in HTML for {mod_id}")
-              except Exception as e:
-                  print(f"  WARNING: Failed to scrape {mod_id}: {e}")
 
           # Compute totals across all discovered modules
           total_packages  = len(discovered)
