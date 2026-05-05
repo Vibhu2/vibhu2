@@ -27,8 +27,37 @@ jobs:
 
           README_PATH = "README.md"
 
-          # Step 1: Discover modules via OData (version info only)
-          # Authors is a free-text field — filter by Id prefix and owner profile instead
+          ns = {
+              "atom": "http://www.w3.org/2005/Atom",
+              "d":    "http://schemas.microsoft.com/ado/2007/08/dataservices",
+              "m":    "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata",
+          }
+
+          def fetch_module(mod_id):
+              """Fetch a single module by exact Id — returns (version, downloads) or None."""
+              url = (
+                  f"https://www.powershellgallery.com/api/v2/Packages"
+                  f"?$filter=Id+eq+'{mod_id}'+and+IsLatestVersion+eq+true"
+              )
+              req = urllib.request.Request(url, headers={"Accept": "application/atom+xml"})
+              with urllib.request.urlopen(req, timeout=30) as resp:
+                  xml_data = resp.read().decode("utf-8")
+              root = ET.fromstring(xml_data)
+              entries = root.findall("atom:entry", ns)
+              if not entries:
+                  return None
+              props = entries[0].find("m:properties", ns)
+              if props is None:
+                  return None
+              version  = props.findtext("d:Version",       default="", namespaces=ns).strip()
+              dl_count = props.findtext("d:DownloadCount", default="0", namespaces=ns).strip()
+              try:
+                  downloads = int(dl_count)
+              except (ValueError, TypeError):
+                  downloads = 0
+              return version, downloads
+
+          # Step 1: Discover modules via batch query to find all VB* modules owned by Vibhu_Bhatnagar
           search_url = (
               "https://www.powershellgallery.com/api/v2/Packages"
               "?$filter=startswith(Id,'VB')"
@@ -39,32 +68,34 @@ jobs:
           with urllib.request.urlopen(req, timeout=30) as resp:
               xml_data = resp.read().decode("utf-8")
 
-          ns = {
-              "atom": "http://www.w3.org/2005/Atom",
-              "d":    "http://schemas.microsoft.com/ado/2007/08/dataservices",
-              "m":    "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata",
-          }
           root = ET.fromstring(xml_data)
-          discovered = {}
+          owned_ids = []
           for entry in root.findall("atom:entry", ns):
               props = entry.find("m:properties", ns)
               if props is None:
                   continue
-              mod_id    = props.findtext("d:Id",            default="", namespaces=ns).strip()
-              version   = props.findtext("d:Version",       default="", namespaces=ns).strip()
-              owners    = props.findtext("d:Owners",        default="", namespaces=ns).strip()
-              dl_count  = props.findtext("d:DownloadCount", default="0", namespaces=ns).strip()
-              # Only include modules owned by Vibhu_Bhatnagar
+              mod_id = props.findtext("d:Id", default="", namespaces=ns).strip()
+              owners = props.findtext("d:Owners", default="", namespaces=ns).strip()
               if mod_id and "Vibhu_Bhatnagar" in owners:
-                  try:
-                      downloads = int(dl_count)
-                  except (ValueError, TypeError):
-                      downloads = 0
-                  discovered[mod_id] = {"version": version, "downloads": downloads}
-                  print(f"  {mod_id}: v{version}, {downloads:,} downloads (from OData)")
+                  owned_ids.append(mod_id)
+
+          if not owned_ids:
+              print("No modules found matching VB* owned by Vibhu_Bhatnagar.")
+              exit(0)
+
+          # Step 2: Fetch each module individually for accurate, fresh download counts
+          discovered = {}
+          for mod_id in owned_ids:
+              result = fetch_module(mod_id)
+              if result is None:
+                  print(f"WARNING: Could not fetch data for {mod_id}, skipping.")
+                  continue
+              version, downloads = result
+              discovered[mod_id] = {"version": version, "downloads": downloads}
+              print(f"  {mod_id}: v{version}, {downloads:,} downloads")
 
           if not discovered:
-              print("No modules found matching VB* owned by Vibhu_Bhatnagar.")
+              print("No modules could be fetched.")
               exit(0)
 
           print(f"Discovered {len(discovered)} module(s): {list(discovered.keys())}")
