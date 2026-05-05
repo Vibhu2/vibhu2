@@ -71,11 +71,11 @@
 ## ✍️ Latest from the blog — [pwsh.in](https://pwsh.in)
 
 <!-- BLOG-POST-LIST:START -->
+- [DESIGN.md: Tell Your AI Agent What to Build, Not Just How to Build It](https://pwsh.in/posts/design-md-ai-agent-ui/)
 - [Hire Me — Vibhu Bhatnagar](https://pwsh.in/hire/)
 - [Delete Stubborn Files and Folders on Windows](https://pwsh.in/posts/delete-stubborn-files-folders/)
 - [Cut MCP Token Costs 88% with jmunch-mcp](https://pwsh.in/posts/cut-mcp-token-costs-jmunch/)
 - [Running PowerShell as the Logged-On User from SYSTEM Context](https://pwsh.in/posts/invoke-vbascurrentuser/)
-- [Managing Printer Mappings Across User Profiles with PowerShell](https://pwsh.in/posts/printer-mapping-powershell-vb-workstationreport/)
 <!-- BLOG-POST-LIST:END -->
 
 > Auto-populated daily by GitHub Actions.
