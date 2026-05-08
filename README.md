@@ -54,8 +54,8 @@
 ## 📊 GitHub Stats
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=Vibhu2&show_icons=true&theme=tokyonight&hide_border=true&title_color=5391FE&icon_color=5391FE&hide_rank=true&include_all_commits=true" height="150" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Vibhu2&layout=compact&theme=tokyonight&hide_border=true&title_color=5391FE&langs_count=6" height="150" />
+  <img src="https://github-readme-stats.vercel.app/api?username=Vibhu2&show_icons=true&theme=tokyonight&hide_border=true&title_color=5391FE&icon_color=5391FE&hide_rank=true&include_all_commits=true&cache_seconds=86400" height="150" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Vibhu2&layout=compact&theme=tokyonight&hide_border=true&title_color=5391FE&langs_count=6&cache_seconds=86400" height="150" />
 </p>
 
 <p align="center">
