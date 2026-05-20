@@ -37,7 +37,7 @@
 
 ## 📦 Published PowerShell Modules
 
-<p><!-- PSGALLERY-TOTAL-PACKAGES --><img src="https://img.shields.io/badge/packages-5-5391FE?style=flat&logo=powershell&logoColor=white" alt="5 packages" /><!-- /PSGALLERY-TOTAL-PACKAGES --> <!-- PSGALLERY-TOTAL-DOWNLOADS --><img src="https://img.shields.io/badge/total%20downloads-1--105-5391FE?style=flat&logo=powershell&logoColor=white" alt="1,105 total downloads" /><!-- /PSGALLERY-TOTAL-DOWNLOADS --></p>
+<p><!-- PSGALLERY-TOTAL-PACKAGES --><img src="https://img.shields.io/badge/packages-6-5391FE?style=flat&logo=powershell&logoColor=white" alt="6 packages" /><!-- /PSGALLERY-TOTAL-PACKAGES --> <!-- PSGALLERY-TOTAL-DOWNLOADS --><img src="https://img.shields.io/badge/total%20downloads-1--105-5391FE?style=flat&logo=powershell&logoColor=white" alt="1,105 total downloads" /><!-- /PSGALLERY-TOTAL-DOWNLOADS --></p>
 
 > Auto-updated daily by GitHub Actions — version and download count pulled live from PowerShell Gallery.
 
@@ -48,6 +48,7 @@
 | [**VB.ServerInventory**](https://www.powershellgallery.com/packages/VB.ServerInventory) | <!-- PSGALLERY-VERSION:VB.ServerInventory -->![v1.0.2](https://img.shields.io/badge/version-1.0.2-5391FE?style=flat)<!-- /PSGALLERY-VERSION:VB.ServerInventory --> | <!-- PSGALLERY-DL:VB.ServerInventory -->![220 downloads](https://img.shields.io/badge/downloads-220-5391FE?style=flat)<!-- /PSGALLERY-DL:VB.ServerInventory --> | 34 cmdlets across 10 categories for Windows Server auditing — AD, GPO, security, DHCP/DNS, RDS, shares, and more |
 | [**VB.AdminTools**](https://www.powershellgallery.com/packages/VB.AdminTools) | <!-- PSGALLERY-VERSION:VB.AdminTools -->![v1.1.0](https://img.shields.io/badge/version-1.1.0-5391FE?style=flat)<!-- /PSGALLERY-VERSION:VB.AdminTools --> | <!-- PSGALLERY-DL:VB.AdminTools -->![213 downloads](https://img.shields.io/badge/downloads-213-5391FE?style=flat)<!-- /PSGALLERY-DL:VB.AdminTools --> | See PSGallery for details. |
 | [VB.DNSEnrichment](https://www.powershellgallery.com/packages/VB.DNSEnrichment) | <!-- PSGALLERY-VERSION:VB.DNSEnrichment -->![v0.5.0](https://img.shields.io/badge/version-0.5.0-5391FE?style=flat)<!-- /PSGALLERY-VERSION:VB.DNSEnrichment --> | <!-- PSGALLERY-DL:VB.DNSEnrichment -->![0 downloads](https://img.shields.io/badge/downloads-0-5391FE?style=flat)<!-- /PSGALLERY-DL:VB.DNSEnrichment --> | See PSGallery for details. |
+| [VB.WindowsDNSLogAnalysis](https://www.powershellgallery.com/packages/VB.WindowsDNSLogAnalysis) | <!-- PSGALLERY-VERSION:VB.WindowsDNSLogAnalysis -->![v1.1.1](https://img.shields.io/badge/version-1.1.1-5391FE?style=flat)<!-- /PSGALLERY-VERSION:VB.WindowsDNSLogAnalysis --> | <!-- PSGALLERY-DL:VB.WindowsDNSLogAnalysis -->![0 downloads](https://img.shields.io/badge/downloads-0-5391FE?style=flat)<!-- /PSGALLERY-DL:VB.WindowsDNSLogAnalysis --> | See PSGallery for details. |
 <!-- PSGALLERY-TABLE-END -->
 
 ---
