@@ -73,11 +73,11 @@
 ## ✍️ Latest from the blog — [pwsh.in](https://pwsh.in)
 
 <!-- BLOG-POST-LIST:START -->
+- [SharePoint Migration Elevated: Migration Manager Over SPMT](https://pwsh.in/posts/sharepoint-migration-elevated-migration-manager-over-spmt/)
 - [Fix Windows Time Sync with w32tm](https://pwsh.in/posts/fix-windows-time-sync/)
 - [Diagnose Wi-Fi Drops with Windows&#39; Built-in WLAN Report](https://pwsh.in/posts/diagnose-wifi-drops-wlan-report/)
 - [DESIGN.md: Tell Your AI Agent What to Build, Not Just How to Build It](https://pwsh.in/posts/design-md-ai-agent-ui/)
 - [Hire Me — Vibhu Bhatnagar](https://pwsh.in/hire/)
-- [Delete Stubborn Files and Folders on Windows](https://pwsh.in/posts/delete-stubborn-files-folders/)
 <!-- BLOG-POST-LIST:END -->
 
 > Auto-populated daily by GitHub Actions.
