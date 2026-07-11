@@ -73,11 +73,11 @@
 ## ✍️ Latest from the blog — [pwsh.in](https://pwsh.in)
 
 <!-- BLOG-POST-LIST:START -->
+- [One PowerShell Report for AD Replication Troubleshooting](https://pwsh.in/posts/ad-replication-health-one-report/)
 - [Replace Your Monitoring Tools with PowerShell](https://pwsh.in/posts/replace-monitoring-with-powershell/)
 - [SharePoint Migration Elevated: Migration Manager Over SPMT](https://pwsh.in/posts/sharepoint-migration-elevated-migration-manager-over-spmt/)
 - [Fix Windows Time Sync with w32tm](https://pwsh.in/posts/fix-windows-time-sync/)
 - [Diagnose Wi-Fi Drops with Windows&#39; Built-in WLAN Report](https://pwsh.in/posts/diagnose-wifi-drops-wlan-report/)
-- [DESIGN.md: Tell Your AI Agent What to Build, Not Just How to Build It](https://pwsh.in/posts/design-md-ai-agent-ui/)
 <!-- BLOG-POST-LIST:END -->
 
 > Auto-populated daily by GitHub Actions.
