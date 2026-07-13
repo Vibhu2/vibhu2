@@ -75,9 +75,9 @@
 <!-- BLOG-POST-LIST:START -->
 - [Why Naming Conventions Matter for Governance and Scale](https://pwsh.in/posts/why-naming-conventions-matter/)
 - [One PowerShell Report for AD Replication Troubleshooting](https://pwsh.in/posts/ad-replication-health-one-report/)
+- [The MSP Client Onboarding Checklist I Actually Use](https://pwsh.in/posts/msp-onboarding-checklist/)
 - [Replace Your Monitoring Tools with PowerShell](https://pwsh.in/posts/replace-monitoring-with-powershell/)
 - [SharePoint Migration Elevated: Migration Manager Over SPMT](https://pwsh.in/posts/sharepoint-migration-elevated-migration-manager-over-spmt/)
-- [Fix Windows Time Sync with w32tm](https://pwsh.in/posts/fix-windows-time-sync/)
 <!-- BLOG-POST-LIST:END -->
 
 > Auto-populated daily by GitHub Actions.
