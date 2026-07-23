@@ -73,11 +73,11 @@
 ## ✍️ Latest from the blog — [pwsh.in](https://pwsh.in)
 
 <!-- BLOG-POST-LIST:START -->
+- [Audit GPO Health and AD/SYSVOL Sync with PowerShell](https://pwsh.in/posts/audit-gpo-health-powershell/)
+- [Removing a Failed or Dead Domain Controller from Active Directory &lpar;GUI &amp; CLI Methods&rpar;](https://pwsh.in/posts/dc-metadata-cleanup-ntdsutil/)
 - [SetupDiag: A Wintel Admin&#39;s Guide to Diagnosing In-Place Upgrade Failures](https://pwsh.in/posts/setupdiag-migration-guide/)
 - [The Security Concepts Behind AD and Entra ID](https://pwsh.in/posts/ad-entra-security-concepts/)
 - [Migrate a Kerberos SPN to a New Service Account](https://pwsh.in/posts/migrate-spn-new-account/)
-- [Why Naming Conventions Matter for Governance and Scale](https://pwsh.in/posts/why-naming-conventions-matter/)
-- [One PowerShell Report for AD Replication Troubleshooting](https://pwsh.in/posts/ad-replication-health-one-report/)
 <!-- BLOG-POST-LIST:END -->
 
 > Auto-populated daily by GitHub Actions.
